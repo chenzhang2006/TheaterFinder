@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chenzhang.theaterfinder.ui.theme.TheaterFinderTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -27,6 +28,8 @@ import com.google.maps.android.compose.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TheaterFinderScreen() {
+    rememberSystemUiController().isStatusBarVisible = false
+
     var mapProperties by remember {
         mutableStateOf(
             MapProperties(maxZoomPreference = 10f, minZoomPreference = 5f)
@@ -81,13 +84,9 @@ fun TheaterFinderScreen() {
                     .fillMaxSize()
                     .padding(start = 16.dp, end = 16.dp)
             ) {
-                val verticalListAlpha = (halfHeightPx - offset) / halfHeightPx
-                val horizontalListAlpha = offset / halfHeightPx
-//                Text(
-//                    "Selection $offset $verticalListAlpha $halfHeightPx",
-//                    modifier = Modifier.padding(start = 8.dp),
-//                    style = MaterialTheme.typography.h6
-//                )
+                val verticalListAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
+                val horizontalListAlpha = offset / halfHeightPx.coerceIn(0f..1f)
+
                 TimeTabs()
                 Spacer(Modifier.height(8.dp))
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -178,7 +177,7 @@ private fun TimeTabs() {
                 text = {
                     Text(
                         text = text,
-                        style = MaterialTheme.typography.subtitle1
+                        style = MaterialTheme.typography.button
                     )
                 },
                 modifier = Modifier.background(Color.White)
