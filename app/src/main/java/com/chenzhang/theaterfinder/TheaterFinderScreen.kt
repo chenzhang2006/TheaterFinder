@@ -110,7 +110,7 @@ fun TheaterFinderScreen() {
                                 }
                                 Spacer(Modifier.height(8.dp))
                                 Text(
-                                    text = "Room $index",
+                                    text = "Movie $index",
                                     modifier = Modifier.padding(start = 8.dp),
                                     style = MaterialTheme.typography.subtitle2
                                 )
