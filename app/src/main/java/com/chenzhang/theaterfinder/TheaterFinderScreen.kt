@@ -85,7 +85,7 @@ fun TheaterFinderScreen() {
                     .padding(start = 16.dp, end = 16.dp)
             ) {
                 val verticalListAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
-                val horizontalListAlpha = offset / halfHeightPx.coerceIn(0f..1f)
+                val horizontalListAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
 
                 TimeTabs()
                 Spacer(Modifier.height(8.dp))
