@@ -29,7 +29,7 @@ import com.google.maps.android.compose.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TheaterFinderScreen() {
-    rememberSystemUiController().isStatusBarVisible = false
+//    rememberSystemUiController().isStatusBarVisible = false
 
     var mapProperties by remember {
         mutableStateOf(
@@ -56,13 +56,11 @@ fun TheaterFinderScreen() {
         frontLayerScrimColor = Color.Unspecified,
         appBar = {},
         peekHeight = 0.dp,
-        backLayerBackgroundColor = Color.White,
         headerHeight = halfHeightDp.dp,
         backLayerContent = {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White)
                     .alpha(offset / halfHeightPx)
             ) {
                 val newYork = LatLng(40.73, -73.9712)
@@ -83,15 +81,19 @@ fun TheaterFinderScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp)
+                    .padding(horizontal = 8.dp)
             ) {
                 val columnAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
                 val rowAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
                 val columnState = rememberLazyListState()
                 val rowState = rememberLazyListState()
 
-                TimeTabs()
-                Spacer(Modifier.height(8.dp))
+                Text(
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 4.dp),
+                    text = "154 W 14th Street",
+                    style = MaterialTheme.typography.h6,
+                    color = contentColorFor(backgroundColor = MaterialTheme.colors.primary)
+                )
                 Box(modifier = Modifier.fillMaxSize()) {
                     if (columnAlpha > 0) {
                         if (columnAlpha == 1f) {
@@ -131,7 +133,7 @@ fun TheaterFinderScreen() {
                             }
                         }
                     }
-                    if(rowAlpha > 0) {
+                    if (rowAlpha > 0) {
                         if (rowAlpha == 1f) {
                             LaunchedEffect(rowState) {
                                 rowState.animateScrollToItem(columnState.firstVisibleItemIndex)
