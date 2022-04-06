@@ -84,70 +84,73 @@ fun TheaterFinderScreen() {
                     .fillMaxSize()
                     .padding(start = 16.dp, end = 16.dp)
             ) {
-                val verticalListAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
-                val horizontalListAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
+                val columnAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
+                val rowAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
 
                 TimeTabs()
                 Spacer(Modifier.height(8.dp))
                 Box(modifier = Modifier.fillMaxSize()) {
-                    LazyColumn(modifier = Modifier.alpha(verticalListAlpha)) {
-                        itemsIndexed(List(30) { "Movie $it" }) { index, item ->
-                            Column {
-                                Card(
-                                    elevation = 4.dp,
-                                    modifier = Modifier
-                                        .size(width = 360.dp, height = 200.dp)
-                                        .padding(8.dp)
-                                        .clickable { }
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = getImageResourceId(index)),
-                                        contentDescription = "",
-                                        modifier = Modifier.fillMaxSize(),
-                                        alignment = Alignment.Center,
-                                        contentScale = ContentScale.Crop
+                    if(columnAlpha > 0) {
+                        LazyColumn(modifier = Modifier.alpha(columnAlpha)) {
+                            itemsIndexed(List(30) { "Movie $it" }) { index, item ->
+                                Column {
+                                    Card(
+                                        elevation = 4.dp,
+                                        modifier = Modifier
+                                            .size(width = 360.dp, height = 200.dp)
+                                            .padding(8.dp)
+                                            .clickable { }
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = getImageResourceId(index)),
+                                            contentDescription = "",
+                                            modifier = Modifier.fillMaxSize(),
+                                            alignment = Alignment.Center,
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+                                    Spacer(Modifier.height(8.dp))
+                                    Text(
+                                        text = "Movie $index",
+                                        modifier = Modifier.padding(start = 8.dp),
+                                        style = MaterialTheme.typography.subtitle2
                                     )
                                 }
-                                Spacer(Modifier.height(8.dp))
-                                Text(
-                                    text = "Movie $index",
-                                    modifier = Modifier.padding(start = 8.dp),
-                                    style = MaterialTheme.typography.subtitle2
-                                )
+                                Divider(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp))
                             }
-                            Divider(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp))
                         }
                     }
-
-                    LazyRow(modifier = Modifier.alpha(horizontalListAlpha)) {
-                        itemsIndexed(List(30) { "Movie $it" }) { index, item ->
-                            Column {
-                                Card(
-                                    elevation = 4.dp,
-                                    modifier = Modifier
-                                        .size(width = 280.dp, height = 200.dp)
-                                        .padding(8.dp)
-                                        .clickable { }
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = getImageResourceId(index)),
-                                        contentDescription = "",
-                                        modifier = Modifier.fillMaxSize(),
-                                        alignment = Alignment.Center,
-                                        contentScale = ContentScale.Crop
+                    if(rowAlpha > 0) {
+                        LazyRow(modifier = Modifier.alpha(rowAlpha)) {
+                            itemsIndexed(List(30) { "Movie $it" }) { index, item ->
+                                Column {
+                                    Card(
+                                        elevation = 4.dp,
+                                        modifier = Modifier
+                                            .size(width = 280.dp, height = 200.dp)
+                                            .padding(8.dp)
+                                            .clickable { }
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = getImageResourceId(index)),
+                                            contentDescription = "",
+                                            modifier = Modifier.fillMaxSize(),
+                                            alignment = Alignment.Center,
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+                                    Spacer(Modifier.height(8.dp))
+                                    Text(
+                                        text = item,
+                                        modifier = Modifier.padding(start = 12.dp),
+                                        style = MaterialTheme.typography.subtitle2
+                                    )
+                                    Text(
+                                        text = "Released on [date]",
+                                        modifier = Modifier.padding(start = 12.dp, top = 8.dp),
+                                        style = MaterialTheme.typography.caption
                                     )
                                 }
-                                Spacer(Modifier.height(8.dp))
-                                Text(
-                                    text = item,
-                                    modifier = Modifier.padding(start = 12.dp),
-                                    style = MaterialTheme.typography.subtitle2
-                                )
-                                Text(
-                                    text = "Released on [date]",
-                                    modifier = Modifier.padding(start = 12.dp, top = 8.dp),
-                                    style = MaterialTheme.typography.caption
-                                )
                             }
                         }
                     }
