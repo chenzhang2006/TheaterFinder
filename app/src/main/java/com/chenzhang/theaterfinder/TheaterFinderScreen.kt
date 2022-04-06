@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -86,12 +87,17 @@ fun TheaterFinderScreen() {
             ) {
                 val columnAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
                 val rowAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
+                val columnState = rememberLazyListState()
+                val rowState = rememberLazyListState()
 
                 TimeTabs()
                 Spacer(Modifier.height(8.dp))
                 Box(modifier = Modifier.fillMaxSize()) {
-                    if(columnAlpha > 0) {
-                        LazyColumn(modifier = Modifier.alpha(columnAlpha)) {
+                    if (columnAlpha > 0) {
+                        LazyColumn(
+                            modifier = Modifier.alpha(columnAlpha),
+                            state = columnState
+                        ) {
                             itemsIndexed(List(30) { "Movie $it" }) { index, item ->
                                 Column {
                                     Card(
@@ -121,7 +127,10 @@ fun TheaterFinderScreen() {
                         }
                     }
                     if(rowAlpha > 0) {
-                        LazyRow(modifier = Modifier.alpha(rowAlpha)) {
+                        LazyRow(
+                            modifier = Modifier.alpha(rowAlpha),
+                            state = rowState
+                        ) {
                             itemsIndexed(List(30) { "Movie $it" }) { index, item ->
                                 Column {
                                     Card(
