@@ -94,6 +94,11 @@ fun TheaterFinderScreen() {
                 Spacer(Modifier.height(8.dp))
                 Box(modifier = Modifier.fillMaxSize()) {
                     if (columnAlpha > 0) {
+                        if (columnAlpha == 1f) {
+                            LaunchedEffect(columnState) {
+                                columnState.animateScrollToItem(rowState.firstVisibleItemIndex)
+                            }
+                        }
                         LazyColumn(
                             modifier = Modifier.alpha(columnAlpha),
                             state = columnState
@@ -127,6 +132,11 @@ fun TheaterFinderScreen() {
                         }
                     }
                     if(rowAlpha > 0) {
+                        if (rowAlpha == 1f) {
+                            LaunchedEffect(rowState) {
+                                rowState.animateScrollToItem(columnState.firstVisibleItemIndex)
+                            }
+                        }
                         LazyRow(
                             modifier = Modifier.alpha(rowAlpha),
                             state = rowState
