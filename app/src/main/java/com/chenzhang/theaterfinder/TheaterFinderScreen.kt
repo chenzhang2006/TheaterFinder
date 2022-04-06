@@ -29,7 +29,10 @@ import com.google.maps.android.compose.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TheaterFinderScreen() {
-//    rememberSystemUiController().isStatusBarVisible = false
+    rememberSystemUiController().setSystemBarsColor(
+        color = Color.Transparent,
+        darkIcons = MaterialTheme.colors.isLight
+    )
 
     var mapProperties by remember {
         mutableStateOf(
