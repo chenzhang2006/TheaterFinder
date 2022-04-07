@@ -1,4 +1,4 @@
-package com.chenzhang.theaterfinder
+package com.chenzhang.theaterfinder.playground
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
