@@ -8,11 +8,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -167,16 +169,27 @@ fun TheaterFinderScreen() {
 
 @Composable
 private fun TopTitle(forColumn: Boolean, alpha: Float) {
-    val topPadding = if(forColumn) 40.dp else 16.dp // status bar 24dp in material guidance
-    Text(
+    Column(
         modifier = Modifier
-            .padding(top = topPadding, bottom = 8.dp, start = 4.dp)
-            .alpha(alpha = alpha),
-        text = "154 W 14th Street",
-        style = MaterialTheme.typography.h6,
-        color = contentColorFor(backgroundColor = MaterialTheme.colors.primary)
-    )
-
+            .padding(top = if (forColumn) 34.dp else 12.dp) // status bar 24dp in material guidance
+            .alpha(alpha = alpha)
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .size(width = 40.dp, height = 4.dp)
+                    .clip(shape = RoundedCornerShape(12.dp))
+                    .background(color = Color.LightGray)
+                    .align(alignment = Alignment.Center)
+            )
+        }
+        Text(
+            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 4.dp),
+            text = "154 W 14th Street",
+            style = MaterialTheme.typography.h6,
+            color = contentColorFor(backgroundColor = MaterialTheme.colors.primary)
+        )
+    }
 }
 
 @Composable
