@@ -16,14 +16,18 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chenzhang.theaterfinder.ui.theme.TheaterFinderTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -33,18 +37,6 @@ fun TheaterFinderScreen() {
         color = Color.Transparent,
         darkIcons = MaterialTheme.colors.isLight
     )
-
-    var mapProperties by remember {
-        mutableStateOf(
-            MapProperties(maxZoomPreference = 10f, minZoomPreference = 5f)
-        )
-    }
-    var mapUiSettings by remember {
-        mutableStateOf(
-            MapUiSettings(mapToolbarEnabled = false)
-        )
-    }
-    GoogleMap(properties = mapProperties, uiSettings = mapUiSettings)
 
     val backdropState = rememberBackdropScaffoldState(BackdropValue.Concealed)
     LaunchedEffect(backdropState) {
@@ -66,18 +58,7 @@ fun TheaterFinderScreen() {
                     .fillMaxSize()
                     .alpha(offset / halfHeightPx)
             ) {
-                val newYork = LatLng(40.73, -73.9712)
-                val cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(newYork, 12f)
-                }
-                GoogleMap(
-                    modifier = Modifier.fillMaxSize(),
-                    cameraPositionState = cameraPositionState
-                ) {
-                    Marker(position = LatLng(40.73, -73.9912))
-                    Marker(position = LatLng(40.745, -73.9812))
-                    Marker(position = LatLng(40.755, -73.9942))
-                }
+                initMap()
             }
         },
         frontLayerContent = {
@@ -182,6 +163,52 @@ fun TheaterFinderScreen() {
             }
         }
     )
+}
+
+@Composable
+private fun initMap() {
+    val context = LocalContext.current
+    val newYork = LatLng(40.73, -73.9712)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(newYork, 12f)
+    }
+    val mapProperties by remember {
+        mutableStateOf(
+            MapProperties(
+                maxZoomPreference = 16f,
+                minZoomPreference = 5f,
+                mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.google_style)
+            )
+        )
+    }
+    val mapUiSettings by remember {
+        mutableStateOf(
+            MapUiSettings(mapToolbarEnabled = false)
+        )
+    }
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = cameraPositionState,
+        properties = mapProperties,
+        uiSettings = mapUiSettings
+    ) {
+        Marker(position = LatLng(40.73, -73.9912))
+        Marker(position = LatLng(40.745, -73.9812))
+        Marker(position = LatLng(40.755, -73.9942))
+    }
+
+//    LaunchedEffect(cameraPositionState) {
+//        cameraPositionState.animate(
+//            CameraUpdateFactory.newCameraPosition(
+//                CameraPosition.fromLatLngZoom(
+//                    LatLng(
+//                        41.666,
+//                        -74.333
+//                    ), 10.0f
+//                )
+//            )
+//        )
+//    }
 }
 
 private fun getImageResourceId(index: Int) = when (index % 3) {
