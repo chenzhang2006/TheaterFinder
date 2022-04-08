@@ -23,8 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chenzhang.theaterfinder.ui.theme.TheaterFinderTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.gms.maps.CameraUpdate
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -33,10 +31,12 @@ import com.google.maps.android.compose.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TheaterFinderScreen() {
-    rememberSystemUiController().setSystemBarsColor(
-        color = Color.Transparent,
-        darkIcons = MaterialTheme.colors.isLight
-    )
+    rememberSystemUiController().apply {
+        setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = MaterialTheme.colors.isLight
+        )
+    }
 
     val backdropState = rememberBackdropScaffoldState(BackdropValue.Concealed)
     LaunchedEffect(backdropState) {
@@ -58,7 +58,7 @@ fun TheaterFinderScreen() {
                     .fillMaxSize()
                     .alpha(offset / halfHeightPx)
             ) {
-                initMap()
+                MapInit()
             }
         },
         frontLayerContent = {
@@ -72,12 +72,6 @@ fun TheaterFinderScreen() {
                 val columnState = rememberLazyListState()
                 val rowState = rememberLazyListState()
 
-                Text(
-                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, start = 4.dp),
-                    text = "154 W 14th Street",
-                    style = MaterialTheme.typography.h6,
-                    color = contentColorFor(backgroundColor = MaterialTheme.colors.primary)
-                )
                 Box(modifier = Modifier.fillMaxSize()) {
                     if (columnAlpha > 0) {
                         if (columnAlpha == 1f) {
@@ -85,35 +79,38 @@ fun TheaterFinderScreen() {
                                 columnState.animateScrollToItem(rowState.firstVisibleItemIndex)
                             }
                         }
-                        LazyColumn(
-                            modifier = Modifier.alpha(columnAlpha),
-                            state = columnState
-                        ) {
-                            itemsIndexed(List(30) { "Movie $it" }) { index, item ->
-                                Column {
-                                    Card(
-                                        elevation = 4.dp,
-                                        modifier = Modifier
-                                            .size(width = 360.dp, height = 200.dp)
-                                            .padding(8.dp)
-                                            .clickable { }
-                                    ) {
-                                        Image(
-                                            painter = painterResource(id = getImageResourceId(index)),
-                                            contentDescription = "",
-                                            modifier = Modifier.fillMaxSize(),
-                                            alignment = Alignment.Center,
-                                            contentScale = ContentScale.Crop
+                        Column {
+                            TopTitle(forColumn = true, alpha = columnAlpha)
+                            LazyColumn(
+                                modifier = Modifier.alpha(columnAlpha),
+                                state = columnState
+                            ) {
+                                itemsIndexed(List(30) { "Movie $it" }) { index, item ->
+                                    Column {
+                                        Card(
+                                            elevation = 4.dp,
+                                            modifier = Modifier
+                                                .size(width = 360.dp, height = 200.dp)
+                                                .padding(8.dp)
+                                                .clickable { }
+                                        ) {
+                                            Image(
+                                                painter = painterResource(id = getImageResourceId(index)),
+                                                contentDescription = "",
+                                                modifier = Modifier.fillMaxSize(),
+                                                alignment = Alignment.Center,
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        }
+                                        Spacer(Modifier.height(8.dp))
+                                        Text(
+                                            text = "Movie $index",
+                                            modifier = Modifier.padding(start = 8.dp),
+                                            style = MaterialTheme.typography.subtitle2
                                         )
                                     }
-                                    Spacer(Modifier.height(8.dp))
-                                    Text(
-                                        text = "Movie $index",
-                                        modifier = Modifier.padding(start = 8.dp),
-                                        style = MaterialTheme.typography.subtitle2
-                                    )
+                                    Divider(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp))
                                 }
-                                Divider(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp))
                             }
                         }
                     }
@@ -123,38 +120,41 @@ fun TheaterFinderScreen() {
                                 rowState.animateScrollToItem(columnState.firstVisibleItemIndex)
                             }
                         }
-                        LazyRow(
-                            modifier = Modifier.alpha(rowAlpha),
-                            state = rowState
-                        ) {
-                            itemsIndexed(List(30) { "Movie $it" }) { index, item ->
-                                Column {
-                                    Card(
-                                        elevation = 4.dp,
-                                        modifier = Modifier
-                                            .size(width = 280.dp, height = 200.dp)
-                                            .padding(8.dp)
-                                            .clickable { }
-                                    ) {
-                                        Image(
-                                            painter = painterResource(id = getImageResourceId(index)),
-                                            contentDescription = "",
-                                            modifier = Modifier.fillMaxSize(),
-                                            alignment = Alignment.Center,
-                                            contentScale = ContentScale.Crop
+                        Column {
+                            TopTitle(forColumn = false, alpha = rowAlpha)
+                            LazyRow(
+                                modifier = Modifier.alpha(rowAlpha),
+                                state = rowState
+                            ) {
+                                itemsIndexed(List(30) { "Movie $it" }) { index, item ->
+                                    Column {
+                                        Card(
+                                            elevation = 4.dp,
+                                            modifier = Modifier
+                                                .size(width = 280.dp, height = 200.dp)
+                                                .padding(8.dp)
+                                                .clickable { }
+                                        ) {
+                                            Image(
+                                                painter = painterResource(id = getImageResourceId(index)),
+                                                contentDescription = "",
+                                                modifier = Modifier.fillMaxSize(),
+                                                alignment = Alignment.Center,
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        }
+                                        Spacer(Modifier.height(8.dp))
+                                        Text(
+                                            text = item,
+                                            modifier = Modifier.padding(start = 12.dp),
+                                            style = MaterialTheme.typography.subtitle2
+                                        )
+                                        Text(
+                                            text = "Released on [date]",
+                                            modifier = Modifier.padding(start = 12.dp, top = 8.dp),
+                                            style = MaterialTheme.typography.caption
                                         )
                                     }
-                                    Spacer(Modifier.height(8.dp))
-                                    Text(
-                                        text = item,
-                                        modifier = Modifier.padding(start = 12.dp),
-                                        style = MaterialTheme.typography.subtitle2
-                                    )
-                                    Text(
-                                        text = "Released on [date]",
-                                        modifier = Modifier.padding(start = 12.dp, top = 8.dp),
-                                        style = MaterialTheme.typography.caption
-                                    )
                                 }
                             }
                         }
@@ -166,7 +166,21 @@ fun TheaterFinderScreen() {
 }
 
 @Composable
-private fun initMap() {
+private fun TopTitle(forColumn: Boolean, alpha: Float) {
+    val topPadding = if(forColumn) 40.dp else 16.dp // status bar 24dp in material guidance
+    Text(
+        modifier = Modifier
+            .padding(top = topPadding, bottom = 8.dp, start = 4.dp)
+            .alpha(alpha = alpha),
+        text = "154 W 14th Street",
+        style = MaterialTheme.typography.h6,
+        color = contentColorFor(backgroundColor = MaterialTheme.colors.primary)
+    )
+
+}
+
+@Composable
+private fun MapInit() {
     val context = LocalContext.current
     val newYork = LatLng(40.73, -73.9712)
     val cameraPositionState = rememberCameraPositionState {
