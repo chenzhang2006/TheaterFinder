@@ -4,10 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -69,102 +66,116 @@ fun TheaterFinderScreen() {
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
             ) {
-                val columnAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
-                val rowAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
                 val columnState = rememberLazyListState()
                 val rowState = rememberLazyListState()
-
                 Box(modifier = Modifier.fillMaxSize()) {
-                    if (columnAlpha > 0) {
-                        if (columnAlpha == 1f) {
-                            LaunchedEffect(columnState) {
-                                columnState.animateScrollToItem(rowState.firstVisibleItemIndex)
-                            }
-                        }
-                        Column {
-                            TopTitle(forColumn = true, alpha = columnAlpha)
-                            LazyColumn(
-                                modifier = Modifier.alpha(columnAlpha),
-                                state = columnState
-                            ) {
-                                itemsIndexed(List(30) { "Movie $it" }) { index, item ->
-                                    Column {
-                                        Card(
-                                            elevation = 4.dp,
-                                            modifier = Modifier
-                                                .size(width = 360.dp, height = 200.dp)
-                                                .padding(8.dp)
-                                                .clickable { }
-                                        ) {
-                                            Image(
-                                                painter = painterResource(id = getImageResourceId(index)),
-                                                contentDescription = "",
-                                                modifier = Modifier.fillMaxSize(),
-                                                alignment = Alignment.Center,
-                                                contentScale = ContentScale.Crop
-                                            )
-                                        }
-                                        Spacer(Modifier.height(8.dp))
-                                        Text(
-                                            text = "Movie $index",
-                                            modifier = Modifier.padding(start = 8.dp),
-                                            style = MaterialTheme.typography.subtitle2
-                                        )
-                                    }
-                                    Divider(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp))
-                                }
-                            }
-                        }
-                    }
-                    if (rowAlpha > 0) {
-                        if (rowAlpha == 1f) {
-                            LaunchedEffect(rowState) {
-                                rowState.animateScrollToItem(columnState.firstVisibleItemIndex)
-                            }
-                        }
-                        Column {
-                            TopTitle(forColumn = false, alpha = rowAlpha)
-                            LazyRow(
-                                modifier = Modifier.alpha(rowAlpha),
-                                state = rowState
-                            ) {
-                                itemsIndexed(List(30) { "Movie $it" }) { index, item ->
-                                    Column {
-                                        Card(
-                                            elevation = 4.dp,
-                                            modifier = Modifier
-                                                .size(width = 280.dp, height = 200.dp)
-                                                .padding(8.dp)
-                                                .clickable { }
-                                        ) {
-                                            Image(
-                                                painter = painterResource(id = getImageResourceId(index)),
-                                                contentDescription = "",
-                                                modifier = Modifier.fillMaxSize(),
-                                                alignment = Alignment.Center,
-                                                contentScale = ContentScale.Crop
-                                            )
-                                        }
-                                        Spacer(Modifier.height(8.dp))
-                                        Text(
-                                            text = item,
-                                            modifier = Modifier.padding(start = 12.dp),
-                                            style = MaterialTheme.typography.subtitle2
-                                        )
-                                        Text(
-                                            text = "Released on [date]",
-                                            modifier = Modifier.padding(start = 12.dp, top = 8.dp),
-                                            style = MaterialTheme.typography.caption
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    ContentInRow(backdropState = backdropState, halfHeightPx = halfHeightPx, columnState = columnState, rowState = rowState)
+                    ContentInColumn(backdropState = backdropState, halfHeightPx = halfHeightPx, columnState = columnState, rowState = rowState)
                 }
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun ContentInColumn(backdropState: BackdropScaffoldState, halfHeightPx: Float, columnState: LazyListState, rowState: LazyListState) {
+    val offset by backdropState.offset
+    val columnAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
+    if (columnAlpha > 0) {
+        if (columnAlpha == 1f) {
+            LaunchedEffect(columnState) {
+                columnState.animateScrollToItem(rowState.firstVisibleItemIndex)
+            }
+        }
+        Column {
+            TopTitle(forColumn = true, alpha = columnAlpha)
+            LazyColumn(
+                modifier = Modifier.alpha(columnAlpha),
+                state = columnState
+            ) {
+                itemsIndexed(List(30) { "Movie $it" }) { index, item ->
+                    Column {
+                        Card(
+                            elevation = 4.dp,
+                            modifier = Modifier
+                                .size(width = 360.dp, height = 200.dp)
+                                .padding(8.dp)
+                                .clickable { }
+                        ) {
+                            Image(
+                                painter = painterResource(id = getImageResourceId(index)),
+                                contentDescription = "",
+                                modifier = Modifier.fillMaxSize(),
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = "Movie $index",
+                            modifier = Modifier.padding(start = 8.dp),
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                    }
+                    Divider(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ContentInRow(backdropState: BackdropScaffoldState, halfHeightPx: Float, columnState: LazyListState, rowState: LazyListState) {
+    val offset by backdropState.offset
+    val rowAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
+    if (rowAlpha > 0) {
+        if (rowAlpha == 1f) {
+            LaunchedEffect(rowState) {
+                rowState.animateScrollToItem(columnState.firstVisibleItemIndex)
+            }
+        }
+        Column {
+            TopTitle(forColumn = false, alpha = rowAlpha)
+            LazyRow(
+                modifier = Modifier.alpha(rowAlpha),
+                state = rowState
+            ) {
+                itemsIndexed(List(30) { "Movie $it" }) { index, item ->
+                    Column {
+                        Card(
+                            elevation = 4.dp,
+                            modifier = Modifier
+                                .size(width = 280.dp, height = 200.dp)
+                                .padding(8.dp)
+                                .clickable { }
+                        ) {
+                            Image(
+                                painter = painterResource(id = getImageResourceId(index)),
+                                contentDescription = "",
+                                modifier = Modifier.fillMaxSize(),
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = item,
+                            modifier = Modifier.padding(start = 12.dp),
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                        Text(
+                            text = "Released on [date]",
+                            modifier = Modifier.padding(start = 12.dp, top = 8.dp),
+                            style = MaterialTheme.typography.caption
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 @Composable
