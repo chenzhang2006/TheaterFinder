@@ -61,17 +61,25 @@ fun TheaterFinderScreen() {
             }
         },
         frontLayerContent = {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
             ) {
                 val columnState = rememberLazyListState()
                 val rowState = rememberLazyListState()
-                Box(modifier = Modifier.fillMaxSize()) {
-                    ContentInRow(backdropState = backdropState, halfHeightPx = halfHeightPx, columnState = columnState, rowState = rowState)
-                    ContentInColumn(backdropState = backdropState, halfHeightPx = halfHeightPx, columnState = columnState, rowState = rowState)
-                }
+                ContentInRow(
+                    backdropState = backdropState,
+                    halfHeightPx = halfHeightPx,
+                    columnState = columnState,
+                    rowState = rowState
+                )
+                ContentInColumn(
+                    backdropState = backdropState,
+                    halfHeightPx = halfHeightPx,
+                    columnState = columnState,
+                    rowState = rowState
+                )
             }
         }
     )
