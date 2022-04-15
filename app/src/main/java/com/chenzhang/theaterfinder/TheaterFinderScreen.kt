@@ -196,7 +196,7 @@ private fun TopTitle(forColumn: Boolean, alpha: Float) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Box(
                 modifier = Modifier
-                    .size(width = 40.dp, height = 4.dp)
+                    .size(width = 48.dp, height = 3.dp)
                     .clip(shape = RoundedCornerShape(12.dp))
                     .background(color = Color.LightGray)
                     .align(alignment = Alignment.Center)
