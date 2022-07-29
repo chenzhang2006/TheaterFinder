@@ -66,19 +66,16 @@ fun TheaterFinderScreen() {
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
             ) {
-                val columnState = rememberLazyListState()
-                val rowState = rememberLazyListState()
+                val listState = rememberLazyListState()
                 ContentInRow(
                     backdropState = backdropState,
                     halfHeightPx = halfHeightPx,
-                    columnState = columnState,
-                    rowState = rowState
+                    listState = listState,
                 )
                 ContentInColumn(
                     backdropState = backdropState,
                     halfHeightPx = halfHeightPx,
-                    columnState = columnState,
-                    rowState = rowState
+                    listState = listState,
                 )
             }
         }
@@ -87,20 +84,15 @@ fun TheaterFinderScreen() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun ContentInColumn(backdropState: BackdropScaffoldState, halfHeightPx: Float, columnState: LazyListState, rowState: LazyListState) {
+private fun ContentInColumn(backdropState: BackdropScaffoldState, halfHeightPx: Float, listState: LazyListState) {
     val offset by backdropState.offset
     val columnAlpha = ((halfHeightPx - offset) / halfHeightPx).coerceIn(0f..1f)
     if (columnAlpha > 0) {
-        if (columnAlpha == 1f) {
-            LaunchedEffect(columnState) {
-                columnState.animateScrollToItem(rowState.firstVisibleItemIndex)
-            }
-        }
         Column {
             TopTitle(forColumn = true, alpha = columnAlpha)
             LazyColumn(
                 modifier = Modifier.alpha(columnAlpha),
-                state = columnState
+                state = listState
             ) {
                 itemsIndexed(List(30) { "Movie $it" }) { index, item ->
                     Column {
@@ -135,20 +127,15 @@ private fun ContentInColumn(backdropState: BackdropScaffoldState, halfHeightPx: 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ContentInRow(backdropState: BackdropScaffoldState, halfHeightPx: Float, columnState: LazyListState, rowState: LazyListState) {
+fun ContentInRow(backdropState: BackdropScaffoldState, halfHeightPx: Float, listState: LazyListState) {
     val offset by backdropState.offset
     val rowAlpha = (offset / halfHeightPx).coerceIn(0f..1f)
     if (rowAlpha > 0) {
-        if (rowAlpha == 1f) {
-            LaunchedEffect(rowState) {
-                rowState.animateScrollToItem(columnState.firstVisibleItemIndex)
-            }
-        }
         Column {
             TopTitle(forColumn = false, alpha = rowAlpha)
             LazyRow(
                 modifier = Modifier.alpha(rowAlpha),
-                state = rowState
+                state = listState
             ) {
                 itemsIndexed(List(30) { "Movie $it" }) { index, item ->
                     Column {
